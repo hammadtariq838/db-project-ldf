@@ -1,0 +1,85 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #D3D3D3;
+
+}
+
+.post{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 500px;
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+}
+.head{
+    display: flex;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #ffffff;
+    align-items: center;
+    justify-content: center;
+}
+.avatar{
+    height: 40px;
+    border-radius: 50%;
+}.name_profile{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.Dots{
+    height: 25px;
+}
+.dp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dp > * {
+    margin-right: 10px;
+}
+
+.body {
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 14px;
+}
+.bottom_icon{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+}
+.left_icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.left_icon > div {
+    margin-right: 10px;
+}
+
+.right_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.right_icon img {
+    width: 20px;
+    height: 20px;
+    margin-left: 20px;
+    
+}

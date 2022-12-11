@@ -1,0 +1,30 @@
+<% layout('layouts/boilerplate')%>
+<div class="row">
+    <h1 class="text-center">Edit post</h1>
+    <div class="col-md-6 offset-md-3">
+        <form action="/posts/<%=post.postid%>?_method=PUT" method="POST" novalidate class="validated-form">
+            <div class="mb-3">
+                <label class="form-label" for="body">body</label>
+                <textarea class="form-control" type="text" id="body" name="body"
+                    value=<%=post.body %> required autofocus>
+                </textarea>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+            </div>
+            <button class="btn btn-success btn-block">Edit</button>
+        </form>
+        <form action="/posts/<%=post.postid%>?_method=DELETE" method="POST" novalidate class="validated-form"
+            enctype="multipart/form-data">
+            <button class="btn btn-danger btn-block">Delete</button>
+        </form>
+        
+
+        <a href="/posts/<%= post.postid%>">Back To post</a>
+
+    </div>
+    <script>
+        // set the value of the textarea to the post body
+        document.getElementById("body").value = "<%=post.body %>";
+    </script>
+</div>

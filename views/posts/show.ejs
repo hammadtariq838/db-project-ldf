@@ -1,0 +1,73 @@
+<% layout('layouts/boilerplate')%>
+<link rel="stylesheet" href="/stylesheets/stars.css" />
+<div class="row">
+  <div class="col-6">
+    <div class="card mb-3">
+      <div class="card-body">
+        <% if (post.userid == userid){%>
+        <h3>Created by You</h3>
+        <% }else{%>
+        <h3>Created by <%=post.username %></h3>
+        <% }%>
+
+        <h5><%=post.body%></h5>
+
+        <div class="d-flex justify-content-between align-items-center">
+          <% if (post.userid == userid){%>
+          <div>
+            <form
+              class="d-inline"
+              action="/posts/<%=post.postid%>/edit"
+              method="GET"
+            >
+              <button class="btn btn-primary">Edit</button>
+            </form>
+            <form
+              class="d-inline"
+              action="/posts/<%=post.postid%>?_method=DELETE"
+              method="POST"
+            >
+              <button class="btn btn-danger">Delete</button>
+            </form>
+          </div>
+          <% }%>
+
+          <!-- button to open comments section (/posts:id/comments) -->
+          <form
+            class="d-inline"
+            action="/posts/<%=post.postid%>/comments"
+            method="GET"
+          >
+            <!-- count contains the numbers of comments on the post display if count is greater than 0 -->
+            <% if (count > 0){%>
+            <button class="btn btn-primary">View Comments (<%=count%>)</button>
+            <% } else{%>
+            <button class="btn btn-primary">No Comments Yet</button>
+            <% }%>
+          </form>
+        </div>
+
+        <form
+          class="validated-form"
+          action="/posts/<%=post.postid%>/comments"
+          method="POST"
+        >
+          <div class="mb-3">
+            <label class="form-label" for="body">Comment</label>
+            <textarea
+              class="form-control"
+              type="text"
+              id="body"
+              name="body"
+              rows="5"
+              required
+              autofocus
+            ></textarea>
+            <div class="valid-feedback">Looks good!</div>
+            <button class="btn btn-primary">Add comment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

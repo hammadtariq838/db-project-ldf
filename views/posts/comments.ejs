@@ -1,0 +1,49 @@
+<% layout('layouts/boilerplate')%>
+<div class="container">
+  <h1>All comments</h1>
+
+  <% for (let comment of comments){%>
+  <div class="card mb-3">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card-body">
+          <!-- dimmed write commented by -->
+          <span>
+            <small
+              class="text-muted <% if (comment.userid == userid){%> text-primary <% }%>"
+            >
+              commented by <% if (comment.userid == userid){%> You <% }else{%>
+              <%= comment.username %> <% }%>
+            </small>
+          </span>
+          <p class="card-text"><%= comment.comment %></p>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content align-items-center">
+              <!-- upvote downvote -->
+
+              <form
+                action="/comments/<%=comment.commentid%>/upvote"
+                method="comment"
+              >
+                <button class="btn btn-primary" type="submit">Upvote</button>
+              </form>
+              <form
+                action="/comments/<%=comment.commentid%>/downvote"
+                method="comment"
+              >
+                <button class="btn btn-success" type="submit">Downvote</button>
+              </form>
+            </div>
+            <a
+              class="btn btn-secondary float-right"
+              href="/comments/<%=comment.commentid%>"
+              >View <% comment.body %>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% }%>
+</div>
