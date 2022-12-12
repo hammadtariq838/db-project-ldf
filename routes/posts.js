@@ -147,7 +147,7 @@ router.post("/:id/vote", authenticated, async (req, res) => {
 });
 
 // edit a post
-router.get("/:id/edit", authenticated, async (req, res) => {
+router.get("/:id/edit", isOwner, async (req, res) => {
   try {
     const { id } = req.params;
     const post = await pool.query("SELECT * FROM posts WHERE postid = $1", [
@@ -167,7 +167,7 @@ router.get("/:id/edit", authenticated, async (req, res) => {
 });
 
 //update a post
-router.put("/:id", authenticated, async (req, res) => {
+router.put("/:id", isOwner, async (req, res) => {
   try {
     const { id } = req.params;
     const { body } = req.body;
@@ -187,7 +187,7 @@ router.put("/:id", authenticated, async (req, res) => {
 });
 
 //delete a post
-router.delete("/:id", authenticated, async (req, res) => {
+router.delete("/:id", isOwner, async (req, res) => {
   try {
     const { id } = req.params;
     await pool.query("DELETE FROM posts WHERE postid = $1", [id]);

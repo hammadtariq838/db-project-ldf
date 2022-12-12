@@ -9,10 +9,11 @@ const isAdmin = (req, res, next) => {
     next();
 }
 
-const isOwner = (req, res, next) => {
-    // if the id in params is posted by the user
-    const check = pool.query("SELECT * FROM posts WHERE postid = $1 AND userid = $2", [req.params.id, req.session.userid]);
-    console.log(check.rows[0]);
+const isOwner = async (req, res, next) => {
+    const check = await pool.query("SELECT * FROM posts WHERE postid = $1 AND userid = $2", [req.params.id, req.session.userid]);
+    console.log(req.params.id) // '415e57bc-4a9b-408b-9513-7f0bee959be7'
+    console.log(req.session.userid) // '5ce848f8-2e1c-41d5-918e-a90e343b8e0a'
+    console.log(check.rows);
     if (check.rows[0] === undefined) {
         req.flash('error', 'You must be the owner to do that!');
         return res.redirect('/posts');
