@@ -9,27 +9,63 @@ const pool = require("../config/db");
 
 //all posts and name
 
+router.get("/:id", authenticated, async (req, res) => {
+  console.log("show function called");
+  try {
+    const { id } = req.params;
+    console.log(id)
+    const post = await pool.query(
+      "SELECT * FROM posts WHERE postid = $1",
+      [id]
+    );
+
+    if (post.rows.length === 0) {
+      req.flash("error", "Post not found");
+      res.redirect("/posts");
+    }
+
+    const count = await pool.query(
+      "SELECT COUNT(*) FROM comments WHERE postid = $1",
+      [id]
+    );
+
+    console.log(count.rows[0].count);
+
+    res.render("posts/show", {
+      post: post.rows[0],
+      count: count.rows[0].count,
+      userid: req.session.userid,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 router.get("/", authenticated, async (req, res) => {
-  console.log("all posts function called")
+  console.log("all posts function called");
   try {
     // posts and votes join if a post doesn't have a vote, it will still be displayed
     const posts = await pool.query(
-      "SELECT * FROM posts INNER JOIN users ON posts.userid = users.userid LEFT JOIN votes ON posts.postid = votes.postid "
-    );
+      "SELECT * FROM posts"
+    )
+    console.log(posts.rows);
 
     // posts on which the user has voted
     const votedPosts = await pool.query(
       "SELECT * FROM votes WHERE userid = $1",
       [req.session.userid]
     );
-    
-
 
     if (posts.rows.length === 0) {
       req.flash("error", "No posts found");
       res.redirect("/posts/new");
     }
-    res.render("posts", { posts: posts.rows, userid: req.session.userid, votedPosts: votedPosts.rows });
+    res.render("posts", {
+      posts: posts.rows,
+      userid: req.session.userid,
+      votedPosts: votedPosts.rows,
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -64,52 +100,20 @@ router.post("/new", authenticated, async (req, res) => {
 });
 
 //get a post
-router.get("/:id", authenticated, async (req, res) => {
-  console.log("show function called")
-  try {
-    const { id } = req.params;
-    const post = await pool.query(
-      "SELECT * FROM posts INNER JOIN users ON posts.userid = users.userid WHERE postid = $1",
-      [id]
-    );
-
-    if (post.rows.length === 0) {
-      req.flash("error", "Post not found");
-      res.redirect("/posts");
-    }
-
-    const count = await pool.query(
-      "SELECT COUNT(*) FROM comments WHERE postid = $1",
-      [id]
-    );
-
-    console.log(count.rows[0].count);
-
-    res.render("posts/show", {
-      post: post.rows[0],
-      count: count.rows[0].count,
-      userid: req.session.userid,
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
 
 // post:id/vote
 router.post("/:id/vote", authenticated, async (req, res) => {
   try {
-    console.log('voting function called')
-    console.log(req.params)
+    console.log("voting function called");
+    console.log(req.params);
     const { id } = req.params;
-    console.log(id)
+    console.log(id);
     // if the user has already voted, toggle the vote
     const hasVoted = await pool.query(
       "SELECT * FROM votes WHERE postid = $1 AND userid = $2",
       [id, req.session.userid]
     );
-    console.log(hasVoted.rows)
+    console.log(hasVoted.rows);
 
     if (hasVoted.rows.length > 0) {
       // if vote is true, set to false, if vote is false, set to true
@@ -131,7 +135,7 @@ router.post("/:id/vote", authenticated, async (req, res) => {
         [id, req.session.userid, true]
       );
     }
-    
+
     req.flash("success", "Vote updated");
     res.redirect("/posts");
   } catch (err) {
@@ -139,7 +143,6 @@ router.post("/:id/vote", authenticated, async (req, res) => {
     res.status(500).send("Server error");
   }
 });
-
 
 // edit a post
 router.get("/:id/edit", authenticated, async (req, res) => {

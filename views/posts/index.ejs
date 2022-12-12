@@ -10,8 +10,10 @@
       <div class="col-md-12">
         <div class="card-body">
           <% for (let post of posts){%>
-            <!-- flex direction column -->
-          <div class="d-flex justify-content-between align-items-start flex-column">
+          <!-- flex direction column -->
+          <div
+            class="d-flex justify-content-between align-items-start flex-column"
+          >
             <span>
               <small
                 class="text-muted <% if (post.userid == userid){%> text-primary <% }%>"
@@ -22,12 +24,11 @@
             </span>
             <h4 class="card-text"><%= post.body %></h4>
             <!-- a button to view the post -->
-            <button class="btn btn-primary" >
+            <button class="btn btn-primary">
               <a
                 class="text-white text-decoration-none"
                 href="/posts/<%= post.postid %>"
-                onclick="window.location.href='/posts/<%= post.postid %>'"
-                >View Post</a
+                >View Post </a
               >
             </button>
           </div>
