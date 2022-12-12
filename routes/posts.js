@@ -9,38 +9,6 @@ const pool = require("../config/db");
 
 //all posts and name
 
-router.get("/:id", authenticated, async (req, res) => {
-  console.log("show function called");
-  try {
-    const { id } = req.params;
-    console.log(id)
-    const post = await pool.query(
-      "SELECT * FROM posts WHERE postid = $1",
-      [id]
-    );
-
-    if (post.rows.length === 0) {
-      req.flash("error", "Post not found");
-      res.redirect("/posts");
-    }
-
-    const count = await pool.query(
-      "SELECT COUNT(*) FROM comments WHERE postid = $1",
-      [id]
-    );
-
-    console.log(count.rows[0].count);
-
-    res.render("posts/show", {
-      post: post.rows[0],
-      count: count.rows[0].count,
-      userid: req.session.userid,
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
 
 router.get("/", authenticated, async (req, res) => {
   console.log("all posts function called");
@@ -100,6 +68,40 @@ router.post("/new", authenticated, async (req, res) => {
 });
 
 //get a post
+
+
+router.get("/:id", authenticated, async (req, res) => {
+  console.log("show function called");
+  try {
+    const { id } = req.params;
+    console.log(id)
+    const post = await pool.query(
+      "SELECT * FROM posts WHERE postid = $1",
+      [id]
+    );
+
+    if (post.rows.length === 0) {
+      req.flash("error", "Post not found");
+      res.redirect("/posts");
+    }
+
+    const count = await pool.query(
+      "SELECT COUNT(*) FROM comments WHERE postid = $1",
+      [id]
+    );
+
+    console.log(count.rows[0].count);
+
+    res.render("posts/show", {
+      post: post.rows[0],
+      count: count.rows[0].count,
+      userid: req.session.userid,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
 
 // post:id/vote
 router.post("/:id/vote", authenticated, async (req, res) => {
