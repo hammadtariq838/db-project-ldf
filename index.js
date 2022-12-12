@@ -66,7 +66,9 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", require("./routes/users"));
+app.use("/profile", require("./routes/profile"));
 app.use("/posts", require("./routes/posts"));
+app.use("/comments", require("./routes/comments"));
 
 app.all("*", (req, res, next) => {
   next(new ExpressError("Page Not Found", 404));

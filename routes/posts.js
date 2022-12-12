@@ -11,15 +11,25 @@ const pool = require("../config/db");
 
 router.get("/", authenticated, async (req, res) => {
   try {
+    // posts and votes join if a post doesn't have a vote, it will still be displayed
     const posts = await pool.query(
-      "SELECT * FROM posts INNER JOIN users ON posts.userid = users.userid"
+      "SELECT * FROM posts INNER JOIN users ON posts.userid = users.userid LEFT JOIN votes ON posts.postid = votes.postid "
     );
+
+    // posts on which the user has voted
+    const votedPosts = await pool.query(
+      "SELECT * FROM votes WHERE userid = $1",
+      [req.session.userid]
+    );
+    
+    console.log(votedPosts.rows);
+
 
     if (posts.rows.length === 0) {
       req.flash("error", "No posts found");
       res.redirect("/posts/new");
     }
-    res.render("posts", { posts: posts.rows, userid: req.session.userid });
+    res.render("posts", { posts: posts.rows, userid: req.session.userid, votedPosts: votedPosts.rows });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -84,6 +94,51 @@ router.get("/:id", authenticated, async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+
+// post:id/vote
+router.post("/:id/vote", authenticated, async (req, res) => {
+  try {
+    console.log('voting function called')
+    console.log(req.params)
+    const { id } = req.params;
+    console.log(id)
+    // if the user has already voted, toggle the vote
+    const hasVoted = await pool.query(
+      "SELECT * FROM votes WHERE postid = $1 AND userid = $2",
+      [id, req.session.userid]
+    );
+    console.log(hasVoted.rows)
+
+    if (hasVoted.rows.length > 0) {
+      // if vote is true, set to false, if vote is false, set to true
+      const state = hasVoted.rows[0].vote;
+      if (state === true) {
+        vote = false;
+      }
+      if (state === false) {
+        vote = true;
+      }
+
+      const updateVote = await pool.query(
+        "UPDATE votes SET vote = $1 WHERE postid = $2 AND userid = $3",
+        [vote, id, req.session.userid]
+      );
+    } else {
+      const newVote = await pool.query(
+        "INSERT INTO votes (postid, userid, vote) VALUES ($1, $2, $3)",
+        [id, req.session.userid, true]
+      );
+    }
+    
+    req.flash("success", "Vote updated");
+    res.redirect("/posts");
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 
 // edit a post
 router.get("/:id/edit", isOwnerOrAdmin, async (req, res) => {
@@ -189,5 +244,7 @@ router.get("/:id/comments", authenticated, async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+// view comment
 
 module.exports = router;

@@ -1,0 +1,44 @@
+<% layout ('layouts/boilerplate') %>
+
+<!-- Edit profile page -->
+<div class="container">
+  <div class="row">
+    <div class="col-md-5">
+      <div class="card mb-3">
+        <div class="card-body">
+          <!-- edit page for user profile -->
+          <h1>Edit Profile</h1>
+          <form action="/profile/edit" method="post">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                name="username"
+                value="<%= user.username %>"
+              />
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                value="<%= user.email %>"
+              />
+            </div>
+            <div class="form-group">
+              <label for="bio">Bio</label>
+              <textarea class="form-control" id="bio" name="bio" rows="3" autofocus>
+<%= user.bio %></textarea
+              >
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
