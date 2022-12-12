@@ -10,6 +10,7 @@ const pool = require("../config/db");
 //all posts and name
 
 router.get("/", authenticated, async (req, res) => {
+  console.log("all posts function called")
   try {
     // posts and votes join if a post doesn't have a vote, it will still be displayed
     const posts = await pool.query(
@@ -22,7 +23,6 @@ router.get("/", authenticated, async (req, res) => {
       [req.session.userid]
     );
     
-    console.log(votedPosts.rows);
 
 
     if (posts.rows.length === 0) {
@@ -65,6 +65,7 @@ router.post("/new", authenticated, async (req, res) => {
 
 //get a post
 router.get("/:id", authenticated, async (req, res) => {
+  console.log("show function called")
   try {
     const { id } = req.params;
     const post = await pool.query(
@@ -141,7 +142,7 @@ router.post("/:id/vote", authenticated, async (req, res) => {
 
 
 // edit a post
-router.get("/:id/edit", isOwnerOrAdmin, async (req, res) => {
+router.get("/:id/edit", authenticated, async (req, res) => {
   try {
     const { id } = req.params;
     const post = await pool.query("SELECT * FROM posts WHERE postid = $1", [
@@ -161,7 +162,7 @@ router.get("/:id/edit", isOwnerOrAdmin, async (req, res) => {
 });
 
 //update a post
-router.put("/:id", isOwnerOrAdmin, async (req, res) => {
+router.put("/:id", authenticated, async (req, res) => {
   try {
     const { id } = req.params;
     const { body } = req.body;
@@ -181,7 +182,7 @@ router.put("/:id", isOwnerOrAdmin, async (req, res) => {
 });
 
 //delete a post
-router.delete("/:id", isOwnerOrAdmin, async (req, res) => {
+router.delete("/:id", authenticated, async (req, res) => {
   try {
     const { id } = req.params;
     await pool.query("DELETE FROM posts WHERE postid = $1", [id]);

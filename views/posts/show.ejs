@@ -13,7 +13,6 @@
         <h5><%=post.body%></h5>
 
         <div class="d-flex justify-content-between align-items-center">
-          <% if (post.userid == userid){%>
           <div>
             <form
               class="d-inline"
@@ -30,7 +29,6 @@
               <button class="btn btn-danger">Delete</button>
             </form>
           </div>
-          <% }%>
 
           <!-- button to open comments section (/posts:id/comments) -->
           <form

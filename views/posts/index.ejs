@@ -1,37 +1,40 @@
 <% layout('layouts/boilerplate')%>
 <div class="container">
-  <h1>All posts</h1>
-
-  <% for (let post of posts){%>
+  <!-- create post button -->
+  <div class="d-flex justify-content-between align-items-center">
+    <h1>All posts</h1>
+    <a class="btn btn-primary" href="/posts/new">Create Post</a>
+  </div>
   <div class="card mb-3">
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-12">
         <div class="card-body">
-          <!-- dimmed write posted by -->
-          <span>
-            <small
-              class="text-muted <% if (post.userid == userid){%> text-primary <% }%>"
-            >
-              Posted by <% if (post.userid == userid){%> You <% }else{%> <%=
-              post.username %> <% }%>
-            </small>
-          </span>
-          <p class="card-text"><%= post.body %></p>
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex justify-content align-items-center">
-              <!-- upvote downvote -->
-
-              <form id="vote" method="post" action="/posts/<%=post.postid%>/vote">
-                <input type="image" name="color"  value="vote" onclick="this.form.submit();"  alt="vote " src="upvote.svg">
-              </form>
-            </div>
-            <a class="btn btn-secondary </div>" href="/posts/<%=post.postid%>"
-              >View <% post.body %>
-            </a>
+          <% for (let post of posts){%>
+            <!-- flex direction column -->
+          <div class="d-flex justify-content-between align-items-start flex-column">
+            <span>
+              <small
+                class="text-muted <% if (post.userid == userid){%> text-primary <% }%>"
+              >
+                Posted by <% if (post.userid == userid){%> You <% }else{%> <%=
+                post.username %> <% }%>
+              </small>
+            </span>
+            <h4 class="card-text"><%= post.body %></h4>
+            <!-- a button to view the post -->
+            <button class="btn btn-primary" >
+              <a
+                class="text-white text-decoration-none"
+                href="/posts/<%= post.postid %>"
+                onclick="window.location.href='/posts/<%= post.postid %>'"
+                >View Post</a
+              >
+            </button>
           </div>
+          <hr />
+          <% }%>
         </div>
       </div>
     </div>
-    <% }%>
   </div>
 </div>

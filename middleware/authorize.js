@@ -22,11 +22,7 @@ const isOwner = (req, res, next) => {
 
 const isOwnerOrAdmin = async (req, res, next) => {
     const check = await pool.query("select * from posts where userid = $1 and postid = $2", [req.session.userid, req.params.id]);
-
-    console.log(check.rows[0]);
-    console.log(req.params.id);
-    console.log(req.session.userid);
-    console.log(!req.session.isAuth || (!check && !req.session.isAdmin));
+    console.log(check)
 
     if (!req.session.isAuth || (!check.rows[0] && !req.session.isAdmin)) {
         req.flash('error', 'You must be the owner or an admin to do that!');
@@ -34,7 +30,6 @@ const isOwnerOrAdmin = async (req, res, next) => {
     }
     next();
 }
-
 
 const authenticated = (req, res, next) => {
     if (!req.session.isAuth) {
